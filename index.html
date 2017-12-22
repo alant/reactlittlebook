@@ -1,0 +1,52 @@
+<meta charset="UTF-8">
+<body>
+  <div class='wrapper'>
+  </div>
+</body>
+
+<script>
+
+const createDivFromString = (innerString) => {
+  const el = document.createElement('div');
+  el.innerHTML = innerString;
+  return el;
+}
+
+  class LikeButton {
+    constructor() {
+      this.state = { clicked: false };
+    }
+
+
+    toggleState() {
+      const oldEl = this.el;
+      this.state = { clicked: !this.state.clicked };
+      this.el = this.render();
+      console.log('click');
+      if (this.onStateChage) this.onStateChage(oldEl, this.el);
+    }
+
+    render() {
+      this.el = createDivFromString(`
+        <button class='likeBtn'>
+          <span class='likeText'>${this.state.clicked ? '取消' : '点赞'}</span>
+          <span>👍</span>
+        </button>
+      `);
+      // const likeText = this.el.querySelector('.likeText');
+      this.el.addEventListener('click',this.toggleState.bind(this),false);
+      return this.el;
+    }
+  }
+
+  const wrapper = document.querySelector('.wrapper');
+  const btn1 = new LikeButton();
+  wrapper.appendChild(btn1.render());
+  btn1.onStateChage = (oldEl, newEl) => {
+    wrapper.insertBefore(newEl, oldEl);wrapper.removeChild(oldEl);
+  }
+  // const btn2 = new LikeButton();
+  // wrapper.appendChild(btn2.render());
+
+
+</script>
