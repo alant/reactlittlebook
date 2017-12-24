@@ -20,6 +20,10 @@ const mount = (component, wrapper) => {
   }
 }
   class Component {
+    constructor(props = {}) {
+      this.props = props;
+    }
+
     setState(state) {
       const oldEl = this.el;
       this.state = state;
@@ -37,19 +41,18 @@ const mount = (component, wrapper) => {
   }
 
   class LikeButton extends Component {
-    constructor() {
-      super();
+    constructor(props) {
+      super(props);
       this.state = { clicked: false };
     }
 
     onClick() {
       this.setState({ clicked: !this.state.clicked });
-      c
     }
 
     render() {
       return `
-        <button class='likeBtn'>
+        <button class='likeBtn' style="background-color: ${this.props.bgColor}">
            <span class='likeText'>${this.state.clicked ? '取消' : '点赞'}</span>
            <span>👍</span>
          </button>
@@ -58,9 +61,30 @@ const mount = (component, wrapper) => {
 
   }
 
+  class BlueRedButton extends Component {
+    constructor(props) {
+      super(props);
+      this.state = { color: 'blue' };
+    }
+
+    onClick() {
+      this.setState({ color: 'red' });
+    }
+
+    render() {
+      return `
+        <div style="color: ${this.state.color};">${this.state.color}</div>
+      `
+    }
+  }
+
   const wrapper = document.querySelector('.wrapper');
-  const btn1 = new LikeButton();
+  const btn1 = new LikeButton({ bgColor: 'red' });
+  const btn2 = new LikeButton();
+  const btn3 = new BlueRedButton();
   mount(btn1, wrapper);
+  mount(btn2, wrapper);
+  mount(btn3, wrapper);
 
   // const btn2 = new LikeButton();
   // wrapper.appendChild(btn2.render());
