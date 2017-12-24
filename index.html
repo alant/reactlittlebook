@@ -12,39 +12,56 @@ const createDivFromString = (innerString) => {
   return el;
 }
 
-  class LikeButton {
-    constructor() {
-      this.state = { clicked: false };
-    }
-
-
-    toggleState() {
+const mount = (component, wrapper) => {
+  wrapper.appendChild(component._renderDOM());
+  component.onStateChange = (oldEl, newEl) => {
+    wrapper.insertBefore(newEl, oldEl);
+    wrapper.removeChild(oldEl);
+  }
+}
+  class Component {
+    setState(state) {
       const oldEl = this.el;
-      this.state = { clicked: !this.state.clicked };
-      this.el = this.render();
-      console.log('click');
-      if (this.onStateChage) this.onStateChage(oldEl, this.el);
+      this.state = state;
+      this.el = this._renderDOM();
+      if (this.onStateChange) this.onStateChange(oldEl, this.el);
     }
 
-    render() {
-      this.el = createDivFromString(`
-        <button class='likeBtn'>
-          <span class='likeText'>${this.state.clicked ? '取消' : '点赞'}</span>
-          <span>👍</span>
-        </button>
-      `);
-      // const likeText = this.el.querySelector('.likeText');
-      this.el.addEventListener('click',this.toggleState.bind(this),false);
+    _renderDOM() {
+      this.el = createDivFromString(this.render());
+      if (this.onClick) {
+        this.el.addEventListener('click',this.onClick.bind(this),false);
+      }
       return this.el;
     }
   }
 
+  class LikeButton extends Component {
+    constructor() {
+      super();
+      this.state = { clicked: false };
+    }
+
+    onClick() {
+      this.setState({ clicked: !this.state.clicked });
+      c
+    }
+
+    render() {
+      return `
+        <button class='likeBtn'>
+           <span class='likeText'>${this.state.clicked ? '取消' : '点赞'}</span>
+           <span>👍</span>
+         </button>
+      `
+    }
+
+  }
+
   const wrapper = document.querySelector('.wrapper');
   const btn1 = new LikeButton();
-  wrapper.appendChild(btn1.render());
-  btn1.onStateChage = (oldEl, newEl) => {
-    wrapper.insertBefore(newEl, oldEl);wrapper.removeChild(oldEl);
-  }
+  mount(btn1, wrapper);
+
   // const btn2 = new LikeButton();
   // wrapper.appendChild(btn2.render());
 
