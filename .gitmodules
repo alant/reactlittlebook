@@ -1,0 +1,3 @@
+[submodule "comment-app"]
+	path = comment-app
+	url = https://github.com/alant/comment-app
